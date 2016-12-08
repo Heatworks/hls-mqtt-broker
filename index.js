@@ -7,7 +7,7 @@ var parts = process.env.REDIS_URL.split(":")
 var port = parts[3]
 var parts2 = process.env.REDIS_URL.split("@")
 var host = parts2[1].split(":")[0]
-var password = pars2[0].split(":")[2]
+var password = parts2[0].split(":")[2]
 
 console.log(` port: ${port} host: ${host} password: ${password}`)
 
