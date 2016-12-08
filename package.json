@@ -1,0 +1,19 @@
+{
+  "name": "heatworks-lab-mqtt-broker",
+  "version": "0.0.1",
+  "description": "MQTT Broker for lab IoT setup.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "mosca": "^2.2.0"
+  },
+  "engines": {
+    "node": "4.1.1",
+    "npm": "2.1.x"
+  }
+}
