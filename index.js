@@ -41,6 +41,7 @@ server.on('published', function(packet, client) {
 
 // Accepts the connection if the username and password are valid
 var authenticate = function(client, username, password, callback) {
+    console.log(`authenticate... ${client} ${username} ${password}`)
   var authorized = (username === 'alice' && password.toString() === 'secret');
   if (authorized) client.user = username;
   callback(null, authorized);
@@ -49,6 +50,7 @@ var authenticate = function(client, username, password, callback) {
 // In this case the client authorized as alice can publish to /users/alice taking
 // the username from the topic and verifing it is the same of the authorized user
 var authorizePublish = function(client, topic, payload, callback) {
+    console.log(`publish ${client} ${topic} ${payload}`)
   callback(null, client.user == topic.split('/')[1]);
 }
 
