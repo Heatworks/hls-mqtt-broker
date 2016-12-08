@@ -2,6 +2,8 @@ var mosca = require('mosca')
 
 console.log(process.env.REDIS_URL)
 
+console.log(process.env)
+
 var pubsubsettings = {
   type: 'redis',
   redis: require('redis'),

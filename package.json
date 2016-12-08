@@ -12,9 +12,5 @@
   "dependencies": {
     "mosca": "^2.2.0",
     "redis": "^2.6.3"
-  },
-  "engines": {
-    "node": "4.1.1",
-    "npm": "2.1.x"
   }
 }
