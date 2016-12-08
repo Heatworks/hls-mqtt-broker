@@ -2,13 +2,23 @@ var mosca = require('mosca')
 
 console.log(process.env.REDIS_URL)
 
-console.log(process.env)
+// redis://h:pclqdi7k1c4mnu7us5jqs2619sj@ec2-184-72-246-90.compute-1.amazonaws.com:11359
+var parts = process.env.REDIS_URL.split(":")
+var port = parts[3]
+var parts2 = process.env.REDIS_URL.split("@")
+var host = parts2[1].split(":")[0]
+var password = pars2[0].split(":")[2]
+
+console.log(` port: ${port} host: ${host} password: ${password}`)
 
 var pubsubsettings = {
   type: 'redis',
   redis: require('redis'),
+  db: 12,
+  port,
   return_buffers: true, // to handle binary payloads
-  url: process.env.REDIS_URL
+  host,
+  password
 };
 
 var moscaSettings = {
