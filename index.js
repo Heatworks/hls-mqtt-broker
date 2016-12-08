@@ -4,7 +4,7 @@ console.log(process.env.REDIS_URL)
 
 // redis://h:pclqdi7k1c4mnu7us5jqs2619sj@ec2-184-72-246-90.compute-1.amazonaws.com:11359
 var parts = process.env.REDIS_URL.split(":")
-var port = parts[3]
+var port = parseInt(parts[3])
 var parts2 = process.env.REDIS_URL.split("@")
 var host = parts2[1].split(":")[0]
 var password = parts2[0].split(":")[2]
