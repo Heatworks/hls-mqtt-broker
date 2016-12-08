@@ -1,11 +1,12 @@
 var mosca = require('mosca')
 
+console.log(process.env.REDIS_URL)
+
 var pubsubsettings = {
-  //using ascoltatore
-  type: 'mongo',        
-  url: 'mongodb://localhost:27017/mqtt',
-  pubsubCollection: 'ascoltatori',
-  mongo: {}
+  type: 'redis',
+  redis: require('redis'),
+  return_buffers: true, // to handle binary payloads
+  url: process.env.REDIS_URL
 };
 
 var moscaSettings = {
