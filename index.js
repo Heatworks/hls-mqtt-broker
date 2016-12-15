@@ -23,8 +23,12 @@ var pubsubsettings = {
 
 var moscaSettings = {
   port: 1883,           //mosca (mqtt) port
-  backend: pubsubsettings   //pubsubsettings is the object we created above 
-
+  backend: pubsubsettings,   //pubsubsettings is the object we created above 
+  http: {
+    port: 1884,
+    bundle: true,
+    static: './'
+  }
 };
 
 var server = new mosca.Server(moscaSettings);   //here we start mosca
@@ -32,32 +36,73 @@ server.on('ready', setup);  //on init it fires up setup()
 
 server.on('clientConnected', function(client) {
     console.log('client connected', client.id);
+    return true;
+});
+
+// fired when a client disconnects
+server.on('clientDisconnected', function(client) {
+  console.log('Client Disconnected:', client.id);
 });
 
 // fired when a message is received
 server.on('published', function(packet, client) {
-  console.log('Published', packet.payload);
+  //console.log(`published ${JSON.stringify(packet)}`);
+  if (client) {
+    if ('organization' in client) {
+      elements = packet.payload.toString().split(",");
+      console.log(`${client.organization}: topic: ${packet.topic} ${elements.join(", ")}`);
+      if (elements == 2) {
+        const [ timestamp, value ] = elements
+      }
+    }
+  }
+  
 });
 
 // Accepts the connection if the username and password are valid
 var authenticate = function(client, username, password, callback) {
-    console.log(`authenticate... ${client} ${username} ${password}`)
-  var authorized = (username === 'alice' && password.toString() === 'secret');
-  if (authorized) client.user = username;
+  console.log(`authenticate... ${client} ${username} ${password}`)
+  if (username == "Auth:JWT") {
+    client.organization = "heatworks";
+    callback(null, true);
+    return;
+  }
+  var authorized = (username === 'wcatron' && password.toString() === 'secret');
+  if (authorized) {
+    client.user = username;
+    client.organization = "heatworks";
+  }
   callback(null, authorized);
 }
 
 // In this case the client authorized as alice can publish to /users/alice taking
 // the username from the topic and verifing it is the same of the authorized user
 var authorizePublish = function(client, topic, payload, callback) {
-    console.log(`publish ${client} ${topic} ${payload}`)
-  callback(null, client.user == topic.split('/')[1]);
+  var authorized = client.organization == topic.split('/')[2];
+  // console.log(`${authorized ? 'Authorized!' : 'Not Authorized'}`);
+  if (!authorized) {
+      console.log('Could not authenticate: '+topic);
+        //console.log(client);
+  }
+  if (topic == "connected") {
+      callback(null, true);
+  }
+  callback(null, authorized);
 }
 
 // In this case the client authorized as alice can subscribe to /users/alice taking
 // the username from the topic and verifing it is the same of the authorized user
 var authorizeSubscribe = function(client, topic, callback) {
-  callback(null, client.user == topic.split('/')[1]);
+  var authorized = client.organization == topic.split('/')[2];
+  console.log(`${authorized ? 'Authorized!' : 'Not Authorized'}`);
+  if (!authorized) {
+      console.log('Could not authenticate: '+topic);
+        //console.log(client);
+  }
+  if (topic == "connected") {
+      callback(null, true);
+  }
+  callback(null, authorized);
 }
 
 // fired when the mqtt server is ready
