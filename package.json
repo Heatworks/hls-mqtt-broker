@@ -11,7 +11,6 @@
   "license": "UNLICENSED",
   "dependencies": {
     "mosca": "^2.2.0",
-    "pg": "^6.1.2",
     "redis": "^2.6.3"
   },
   "devDependencies": {

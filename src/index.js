@@ -1,5 +1,4 @@
 var mosca = require('mosca')
-var pg = require('pg')
 require('dotenv').config()
 
 var pubsubsettings = {
