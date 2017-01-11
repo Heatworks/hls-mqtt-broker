@@ -6,9 +6,12 @@ var pubsubsettings = {
   db: process.env.REDIS_DB,
   port: process.env.REDIS_PORT,
   return_buffers: true,
-  host: process.env.REDIS_HOST,
-  password: process.env.REDIS_PASSWORD
+  host: process.env.REDIS_HOST
 };
+
+if (process.env.REDIS_PASSWORD) {
+  pubsubsettings.password = process.env.REDIS_PASSWORD;
+}
 
 var moscaSettings = {
   port: 1883,           //mosca (mqtt) port
@@ -113,7 +116,6 @@ function checkAccessToken(token) {
   } else {
     return false;
   }
-  
 }
 
 // In this case the client authorized as alice can publish to /users/alice taking
