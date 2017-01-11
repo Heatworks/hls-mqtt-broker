@@ -1,7 +1,7 @@
 {
-  "name": "heatworks-lab-mqtt-broker",
+  "name": "heatworks/hls-mqtt-broker",
   "version": "0.0.1",
-  "description": "MQTT Broker for lab IoT setup.",
+  "description": "MQTT Broker for HLS.",
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
