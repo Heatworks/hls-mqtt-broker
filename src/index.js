@@ -10,22 +10,14 @@ var client = new pg.Client({
     port     : process.env.SQL_PORT
 });
 
-var parts = process.env.REDIS_URL.split(":")
-var port = parseInt(parts[3])
-var parts2 = process.env.REDIS_URL.split("@")
-var host = parts2[1].split(":")[0]
-var password = parts2[0].split(":")[2]
-
-console.log(` port: ${port} host: ${host} password: ${password}`)
-
 var pubsubsettings = {
   type: 'redis',
   redis: require('redis'),
-  db: 12,
-  port,
-  return_buffers: true, // to handle binary payloads
-  host,
-  password
+  db: process.env.REDIS_DB,
+  port: process.env.REDIS_PORT,
+  return_buffers: true,
+  host: process.env.REDIS_HOST,
+  password: process.env.REDIS_PASSWORD
 };
 
 var moscaSettings = {
@@ -35,6 +27,10 @@ var moscaSettings = {
     port: 1884,
     bundle: true,
     static: './'
+  },
+  credentials: {
+    keyPath: process.env.BROKER_KEY_PATH,
+    certPath: process.env.BROKER_CERT_PATH
   }
 };
 
