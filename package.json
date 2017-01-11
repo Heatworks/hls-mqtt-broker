@@ -1,5 +1,5 @@
 {
-  "name": "heatworks/hls-mqtt-broker",
+  "name": "hls-mqtt-broker",
   "version": "0.0.1",
   "description": "MQTT Broker for HLS.",
   "main": "index.js",
