@@ -2,14 +2,6 @@ var mosca = require('mosca')
 var pg = require('pg')
 require('dotenv').config()
 
-var client = new pg.Client({
-    host     : process.env.SQL_HOST,
-    user     : process.env.SQL_USERNAME,
-    password : process.env.SQL_PASSWORD,
-    database : process.env.SQL_DB,
-    port     : process.env.SQL_PORT
-});
-
 var pubsubsettings = {
   type: 'redis',
   redis: require('redis'),
@@ -23,20 +15,17 @@ var pubsubsettings = {
 var moscaSettings = {
   port: 1883,           //mosca (mqtt) port
   backend: pubsubsettings,   //pubsubsettings is the object we created above 
-  http: {
-    port: 1884,
+  https: {
+    port: 443,
     bundle: true,
     static: './'
   },
-  credentials: {
+  secure: {
+    port: 8883,
     keyPath: process.env.BROKER_KEY_PATH,
     certPath: process.env.BROKER_CERT_PATH
   }
 };
-
-client.connect(function (err) {
-  console.log('PG: Connected!')
-})
 
 var server = new mosca.Server(moscaSettings);   //here we start mosca
 server.on('ready', setup);  //on init it fires up setup()
@@ -72,30 +61,61 @@ server.on('published', function(packet, client) {
 
 function insertRecord(organization_id, timestamp, channel, device, floatValue, integerValue) {
   var params = [organization_id, timestamp, channel, device, floatValue, integerValue];
-  query = "INSERT INTO lab_messages VALUES ($1, $2, $3, $4, $5, $6);"
+  console.log(params);
+  /* query = "INSERT INTO lab_messages VALUES ($1, $2, $3, $4, $5, $6);"
   client.query(query, params, function (err, result) {
     if (err) {
       console.warn(err)
     }
-});
+  }); */
 }
 
 // Accepts the connection if the username and password are valid
 var authenticate = function(client, username, password, callback) {
   console.log(`authenticate... ${client} ${username} ${password}`)
-  if (username == "Auth:JWT") {
-    client.organization = "heatworks";
-    client.organization_id = 0;
-    callback(null, true);
-    return;
+  if (username == "HLS:AccessToken") {
+    var response = fetchAccessToken(password);
+    if (response) {
+      client.organization = response.organization;
+      client.organizationId = response.organizationId;
+      client.username = response.username;
+      client.policy = response.policy;
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  } else {
+    callback(null, false);
   }
-  var authorized = (username === 'wcatron' && password.toString() === 'secret');
-  if (authorized) {
-    client.user = username;
-    client.organization = "heatworks";
-    client.organization_id = 0;
+}
+
+function checkAccessToken(token) {
+  if (token == "device") {
+    return {
+      organization: 'heatworks',
+      organizationId: 1,
+      username: 'device',
+      policy: {
+        'hls:data:*': [
+          "heatworks/device/*"
+        ]
+      }
+    };
+  } else if (token == "user") {
+    return {
+      organization: 'heatworks',
+      organizationId: 1,
+      username: 'username',
+      policy: {
+        'hls:data:*': [
+          "heatworks/*"
+        ]
+      }
+    };
+  } else {
+    return false;
   }
-  callback(null, authorized);
+  
 }
 
 // In this case the client authorized as alice can publish to /users/alice taking
@@ -120,7 +140,6 @@ var authorizeSubscribe = function(client, topic, callback) {
   console.log(`${authorized ? 'Authorized!' : 'Not Authorized'}`);
   if (!authorized) {
       console.log('Could not authenticate: '+topic);
-        //console.log(client);
   }
   if (topic == "connected") {
       callback(null, true);
