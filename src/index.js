@@ -1,5 +1,4 @@
 var mosca = require('mosca')
-require('dotenv').config()
 
 var pubsubsettings = {
   type: 'redis',
