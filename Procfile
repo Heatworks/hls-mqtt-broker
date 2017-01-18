@@ -1,1 +1,1 @@
-mqtt: npm start
+mqtt: node src/index.js

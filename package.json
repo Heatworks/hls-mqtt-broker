@@ -4,13 +4,14 @@
   "description": "MQTT Broker for HLS.",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "nf start",
     "test": "mocha"
   },
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
     "mosca": "^2.2.0",
+    "node-fetch": "^1.6.3",
     "redis": "^2.6.3"
   },
   "devDependencies": {
