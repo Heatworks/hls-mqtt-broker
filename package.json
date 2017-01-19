@@ -11,6 +11,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "mosca": "^2.2.0",
+    "nf": "0.0.3",
     "node-fetch": "^1.6.3",
     "redis": "^2.6.3"
   },
