@@ -35,7 +35,6 @@ server.on('clientDisconnected', function(client) {
 // fired when a message is received
 server.on('published', function(packet, client) {
 	console.log(`published ${JSON.stringify(packet)}`);
-	
 	if (client) {
 		if ('organization' in client) {
 			var data = {
@@ -43,7 +42,6 @@ server.on('published', function(packet, client) {
 				topic: packet.topic,
 				organizationId: client.organizationId
 			};
-			console.log(data);
 			fetch(process.env.HLS_HOST + '/dac/Data', { 
                 method: 'POST', 
                 body: JSON.stringify( data ),
@@ -62,7 +60,7 @@ server.on('published', function(packet, client) {
 
 // Accepts the connection if the username and password are valid
 var authenticate = function(client, username, password, callback) {
-	console.log(`authenticate... ${client.id} ${username} ${password}`)
+	console.log(`authenticate... ${client.id}`)
 	if (username == "HLS:AccessToken") {
 		fetchAccessToken(password).then((response) => {
 			client.organization = response.organization;
