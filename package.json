@@ -4,7 +4,7 @@
   "description": "MQTT Broker for HLS.",
   "main": "index.js",
   "scripts": {
-    "start": "nf start",
+    "start": "node src/index.js",
     "test": "mocha"
   },
   "author": "",
