@@ -16,7 +16,12 @@ if (process.env.REDIS_PASSWORD) {
 
 var moscaSettings = {
 	port: 1883,           //mosca (mqtt) port
-	backend: pubsubsettings   //pubsubsettings is the object we created above 
+	backend: pubsubsettings,   //pubsubsettings is the object we created above 
+	http: {
+		port: 1884,
+		bundle: true,
+		static: './'
+	}
 };
 
 var server = new mosca.Server(moscaSettings);   //here we start mosca
