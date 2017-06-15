@@ -1,1 +1,1 @@
-docker run --network host -p 0.0.0.0:1883:1883 -p 0.0.0.0:8883:8883 -v /Users/westoncatron/heatworks/code/lab/heatworks-lab-mqtt-broker/certs:/root/.ssh --name hls-mqtt-broker --rm -t --env-file .env heatworks/hls-mqtt-broker:latest
+docker run --network host --publish-all -v /Users/westoncatron/heatworks/code/lab/heatworks-lab-mqtt-broker/certs:/root/.ssh --name hls-mqtt-broker --rm -t --env-file .env heatworks/hls-mqtt-broker:latest

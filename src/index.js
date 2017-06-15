@@ -33,18 +33,17 @@ var server = new mosca.Server(moscaSettings);   //here we start mosca
 server.on('ready', setup);  //on init it fires up setup()
 
 server.on('clientConnected', function(client) {
-	console.log('client connected', client.id);
+	console.log(`client:connected:${client.id}.`);
 	return true;
 });
 
 // fired when a client disconnects
 server.on('clientDisconnected', function(client) {
-	console.log('Client Disconnected:', client.id);
+	console.log(`client:disconnected:${client.id}.`);
 });
 
 // fired when a message is received
 server.on('published', function(packet, client) {
-	console.log(`published ${JSON.stringify(packet)}`);
 	if (client) {
 		if ('organization' in client) {
 			var data = {
@@ -70,7 +69,7 @@ server.on('published', function(packet, client) {
 
 // Accepts the connection if the username and password are valid
 var authenticate = function(client, username, password, callback) {
-	console.log(`authenticate... ${client.id}`)
+	console.log(`client:authenticate:${client.id}`)
 	if (username == "HLS:AccessToken") {
 		fetchAccessToken(password).then((response) => {
 			client.organization = response.organization;
@@ -111,7 +110,7 @@ var authorizeSubscribe = function(client, topic, callback) {
 
 // fired when the mqtt server is ready
 function setup() {
-	console.log('Mosca server is up and running')
+	console.log('Mosca server is up and running.')
 	server.authenticate = authenticate;
 	server.authorizePublish = authorizePublish;
 	server.authorizeSubscribe = authorizeSubscribe;
