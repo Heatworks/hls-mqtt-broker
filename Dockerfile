@@ -8,7 +8,7 @@ ADD Procfile Procfile
 
 RUN npm install
 
-ADD certs/ certs/
+# ADD certs/ certs/
 
 EXPOSE 1883
 EXPOSE 1884
