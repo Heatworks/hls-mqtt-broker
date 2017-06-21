@@ -22,13 +22,16 @@ var moscaSettings = {
 		bundle: true,
 		static: './'
 	},
-	allowNonSecure: true,
-	secure : {
+	allowNonSecure: true
+};
+
+if (process.env.SECURE_KEY) {
+	moscaSettings['secure'] = {
 		port: 8883,
 		keyPath: process.env.SECURE_KEY,
 		certPath: process.env.SECURE_CERT,
   	}
-};
+}
 
 var server = new mosca.Server(moscaSettings);   //here we start mosca
 
