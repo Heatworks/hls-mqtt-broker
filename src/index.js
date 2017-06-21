@@ -22,6 +22,7 @@ var moscaSettings = {
 		bundle: true,
 		static: './'
 	},
+	allowNonSecure: true,
 	secure : {
 		port: 8883,
 		keyPath: process.env.SECURE_KEY,
@@ -30,7 +31,6 @@ var moscaSettings = {
 };
 
 var server = new mosca.Server(moscaSettings);   //here we start mosca
-server.on('ready', setup);  //on init it fires up setup()
 
 server.on('clientConnected', function(client) {
 	console.log(`client:connected:${client.id}.`);
@@ -38,8 +38,8 @@ server.on('clientConnected', function(client) {
 });
 
 // fired when a client disconnects
-server.on('clientDisconnected', function(client) {
-	console.log(`client:disconnected:${client.id}.`);
+server.on('clientDisconnected', function(client, reason) {
+	console.log(`client:disconnected:${client.id}:${reason}`);
 });
 
 // fired when a message is received
@@ -72,16 +72,20 @@ var authenticate = function(client, username, password, callback) {
 	console.log(`client:authenticate:${client.id}`)
 	if (username == "HLS:AccessToken") {
 		fetchAccessToken(password).then((response) => {
-			client.organization = response.organization;
+			client.organization = response.organizationName;
 			client.organizationId = response.organizationId;
 			client.username = response.username;
+			client.userId = response.userId;
 			client.policy = response.policy;
+			console.log(`client:authenticate:${client.id}:success:${client.organization}`)
 			callback(null, true);
 		}).catch((error) => {
 			console.error(error);
+			console.log(`client:authenticate:${client.id}:failed:${error}`)
 			callback(null, false);
 		});
 	} else {
+		console.log(`client:authenticate:${client.id}:failed:Could not authenticate, invalid username.`)
 		callback(null, false);
 	}
 }
@@ -110,8 +114,10 @@ var authorizeSubscribe = function(client, topic, callback) {
 
 // fired when the mqtt server is ready
 function setup() {
-	console.log('Mosca server is up and running.')
+	console.log('server:Started:Mosca server is up and running.')
 	server.authenticate = authenticate;
 	server.authorizePublish = authorizePublish;
 	server.authorizeSubscribe = authorizeSubscribe;
 }
+
+server.on('ready', setup);  //on init it fires up setup()

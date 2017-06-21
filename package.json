@@ -11,9 +11,9 @@
   "license": "UNLICENSED",
   "dependencies": {
     "foreman": "^2.0.0",
-    "mosca": "^2.2.0",
+    "mosca": "^2.5.0",
     "node-fetch": "^1.6.3",
-    "redis": "^2.6.3"
+    "redis": "^2.7.1"
   },
   "devDependencies": {
     "mocha": "^3.2.0"
