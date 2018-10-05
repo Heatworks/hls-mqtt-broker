@@ -70,11 +70,27 @@ server.on('published', function(packet, client) {
 	}
 });
 
+var validateResponse = function(response) {
+	if (!('organizationName' in response)) {
+		throw new Error('Could not validate; missing organizationName.');
+	}
+	if (!('organizationId' in response)) {
+		throw new Error('Could not validate; missing organizationId.');
+	}
+	if (!('userId' in response)) {
+		throw new Error('Could not validate; missing userId.');
+	}
+	if (!('policy' in response)) {
+		throw new Error('Could not validate; missing policy.');
+	}
+}
+
 // Accepts the connection if the username and password are valid
 var authenticate = function(client, username, password, callback) {
 	console.log(`client:authenticate:${client.id}`)
 	if (username == "HLS:AccessToken") {
 		fetchAccessToken(password).then((response) => {
+			validateResponse(response)
 			client.organization = response.organizationName;
 			client.organizationId = response.organizationId;
 			client.username = response.username;
