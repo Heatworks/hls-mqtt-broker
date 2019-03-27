@@ -1,4 +1,6 @@
-FROM mhart/alpine-node:latest
+ARG node=node
+
+FROM $node:8
 
 WORKDIR /broker
 
